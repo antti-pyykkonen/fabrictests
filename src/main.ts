@@ -12,6 +12,12 @@ canvas.setHeight(275);
 
 const pngStream = fs.createWriteStream('./fabric.png');
 
+if (data && data.backgroundImage && data.backgroundImage.src) {
+  let url = data.backgroundImage.src as string;
+  if (url.startsWith('//')) {
+    data.backgroundImage.src = `http:${url}`;
+  }
+}
 canvas.loadFromDatalessJSON(data, function () {
   canvas.renderAll();
 

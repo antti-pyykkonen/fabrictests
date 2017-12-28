@@ -22,7 +22,7 @@ export const fabricData: string = `
     "scaleY" : 1,
     "skewX" : 0,
     "skewY" : 0,
-    "src" : "http://testing.zef.fi/0.9.0/assets/templates/empty/bg.png",
+    "src" : "//testing.zef.fi/0.9.0/assets/templates/empty/bg.png",
     "strokeLineCap" : "butt",
     "strokeLineJoin" : "miter",
     "strokeMiterLimit" : 10,
