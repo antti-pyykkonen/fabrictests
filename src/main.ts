@@ -1,5 +1,6 @@
 import { fabric } from 'fabric';
 import * as fs from 'fs';
+import * as jsdom from 'jsdom';
 
 import { fabricData as fabricData } from './data';
 
@@ -9,6 +10,14 @@ const canvas = new fabric.Canvas();
 
 canvas.setWidth(540);
 canvas.setHeight(275);
+
+fabric.nodeCanvas.registerFont(__dirname + '/fonts/bungee.ttf', { family: 'Bungee' })
+
+// console.log(fabric.nodeCanvas);
+
+// var font = new fabric.Font('Bungee', __dirname + '/fonts/bu.woff2');
+
+// canvas.contextContainer.addFont(font); 
 
 const pngStream = fs.createWriteStream('./fabric.png');
 
