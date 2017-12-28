@@ -1,32 +1,35 @@
-/**
- * Some predefined delays (in milliseconds).
- */
-export enum Delays {
-  Short = 500,
-  Medium = 2000,
-  Long = 5000,
-}
+import { fabric } from 'fabric';
+import * as fs from 'fs';
 
-/**
- * Returns a Promise<string> that resolves after given time.
- *
- * @param {string} name - A name.
- * @param {number=} [delay=Delays.Medium] - Number of milliseconds to delay resolution of the Promise.
- * @returns {Promise<string>}
- */
-function delayedHello(name: string, delay: number = Delays.Medium): Promise<string> {
-  return new Promise<string>(
-    (resolve: (value?: string | PromiseLike<string>) => void) => setTimeout(
-      () => resolve(`Hello, ${name}`),
-      delay,
-    ),
-  );
-}
+import { fabricData as fabricData } from './data';
 
-// Below are examples of using TSLint errors suppression
-// Here it is supressing missing type definitions for greeter function
+const data = JSON.parse(fabricData);
 
-export async function greeter(name) { // tslint:disable-line typedef
-  // tslint:disable-next-line no-unsafe-any
-  return await delayedHello(name, Delays.Long);
-}
+const canvas = new fabric.Canvas();
+
+canvas.setWidth(540);
+canvas.setHeight(275);
+
+const pngStream = fs.createWriteStream('./fabric.png');
+
+canvas.loadFromDatalessJSON(data, function () {
+  canvas.renderAll();
+
+  const stream = canvas.createPNGStream();
+
+  stream.on('data', (chunk) => {
+    pngStream.write(chunk);
+  });
+
+  stream.on('end', () => {
+    pngStream.end();
+  });
+
+  stream.on('finish', () => {
+    console.log('Write done');
+  });
+
+  stream.on('error', (error: any) => {
+    console.error(error);
+  });
+});

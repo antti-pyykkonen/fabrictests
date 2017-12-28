@@ -9,6 +9,9 @@
   "devDependencies": {
     "@types/jest": "~21.1.9",
     "@types/node": "~8.5.2",
+    "fabric": "2.0.0-rc.4",
+    "canvas-prebuilt": "2.0.0-alpha.2",
+    "jsdom": "^9.0.0",
     "jest": "~22.0.3",
     "rimraf": "~2.6.2",
     "tslint": "~5.8.0",
