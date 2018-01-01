@@ -9,7 +9,12 @@ import * as mkdir from 'mkdirp';
 import { fabricDataThree as fabricData } from './data';
 
 const canvas = new fabric.Canvas();
+const fields: {name: string, value: string}[] = [
+  { name: 'backgroundImage.src', value: 'http://www.pixelcg.com/blog/wp-content/uploads/2009/03/ash_uvgrid03.jpg'},
+  { name: 'objects.0.text', value: 'HELLO MATE'},
+  { name: 'objects.1.objects.1.text', value: 'HELLO TO YOU'}
 
+];
 canvas.setWidth(540);
 canvas.setHeight(275);
 
@@ -23,7 +28,61 @@ function renderImage(data) {
       data.backgroundImage.src = `http:${url}`;
     }
   }
+
+  if (fields) {
+    for (const fieldIdx in fields) {
+      const field = fields[fieldIdx];
+
+      if (field && field.name && field.value) {
+        let f = data;
+
+        const keys = field.name.split('.');
+
+        for (const k in keys) {
+          if (f && f[keys[k]]) {
+            if (f[keys[k]] instanceof Object) {
+              f = f[keys[k]];
+            } else {
+              break;
+            }
+          } else {
+            f = null;
+          }
+        }
+
+        if (f) {
+          // f = field.value;
+          // console.log(f);
+          // delete f[field.name];
+          const lastKey = field.name.split('.').pop();
+          f[lastKey] = field.value;
+          // console.log(f, f[field.name]);
+          // // f[field.name] = field.value;
+          // console.log([f[field.name]]);
+        }
+      }
+    }
+  }
+
+  // console.log(data.backgroundImage.src);
+
+
   canvas.loadFromDatalessJSON(data, function () {
+    const { width, height } = canvas.backgroundImage.getOriginalSize();
+    // console.log(canvas.backgroundImage.getOriginalSize());
+    // canvas.backgroundImage.viewportCenter();
+    // canvas.backgroundImage.setCoords();
+    canvas.backgroundImage.set('height', height);
+    canvas.backgroundImage.set('width', width);
+    // canvas.backgroundImage.set('originX', 'center');
+    // canvas.backgroundImage.set('originY', 'center');
+    
+
+    canvas.backgroundImage.set('left', 540 / 2);
+    canvas.backgroundImage.set('top', 270 / 2);
+
+    canvas.backgroundImage.center();
+
     canvas.renderAll();
   
     const stream = canvas.createPNGStream();
@@ -96,16 +155,16 @@ function handleFabricRender() {
 
 function handleFontLoading(fabricData: any, manifest: any): Promise<void> {
   let promises: Promise<any>[] = [];
-  console.log('loading fonts');
+  // console.log('loading fonts');
   let manifestFonts = fetchFontFiles(fetchFonts(fabricData), manifest);
-  console.log('got manifest fonts');
+  // console.log('got manifest fonts');
 
   manifestFonts.forEach(requestFont => {
     const fontResolved = new Promise((resolve, reject) => {
-      console.log(requestFont);
+      // console.log(requestFont);
       const exists = fs.existsSync(`/tmp/fonts/${requestFont.family}/font.ttf`);
       if (!exists) {
-        console.log('does not exist');
+        // console.log('does not exist');
 
         mkdir.sync(`/tmp/fonts/${requestFont.family}`);
 
